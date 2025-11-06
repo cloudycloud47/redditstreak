@@ -1,0 +1,9 @@
+{
+  "name": "redditstreak",
+  "version": "1.0.0",
+  "main": "api/streak.js",
+  "type": "module",
+  "dependencies": {
+    "puppeteer": "^22.6.0"
+  }
+}
