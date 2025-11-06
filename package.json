@@ -4,6 +4,7 @@
   "main": "api/streak.js",
   "type": "module",
   "dependencies": {
-    "puppeteer": "^22.6.0"
+    "@sparticuz/chromium-min": "^122.0.0",
+    "puppeteer-core": "^24.15.0"
   }
 }
