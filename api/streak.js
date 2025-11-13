@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer-core";
+import puppeteer from "puppeteer";
 
 export default async function handler(req, res) {
   const { user } = req.query;
