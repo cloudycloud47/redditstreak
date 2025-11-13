@@ -1,8 +1,9 @@
 {
+  "name": "redditstreak",
+  "version": "1.0.0",
   "type": "module",
   "dependencies": {
-    "puppeteer": "^24.3.0"
+    "puppeteer-core": "^22.5.0",
+    "@sparticuz/chromium-min": "^125.0.0"
   }
 }
-
-
