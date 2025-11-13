@@ -1,4 +1,3 @@
-
 import chromium from '@sparticuz/chromium-min';
 import puppeteer from 'puppeteer-core';
 
@@ -8,10 +7,8 @@ export default async function handler(req, res) {
 
   let browser = null;
   try {
-    const exePath = await chromium.executablePath();
-
     browser = await puppeteer.launch({
-      executablePath: exePath,
+      executablePath: chromium.path, // use path instead of executablePath()
       args: chromium.args,
       headless: chromium.headless,
     });
