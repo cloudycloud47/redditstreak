@@ -7,8 +7,9 @@ export default async function handler(req, res) {
 
   let browser = null;
   try {
+    const exePath = chromium.executablePathSync(); // synchronous path for Vercel
     browser = await puppeteer.launch({
-      executablePath: chromium.path, // use path instead of executablePath()
+      executablePath: exePath,
       args: chromium.args,
       headless: chromium.headless,
     });
