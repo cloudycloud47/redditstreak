@@ -1,8 +1,16 @@
 {
+  "version": 2,
   "functions": {
-    "api/streak.js": {
-      "runtime": "nodejs20.x",
-      "maxDuration": 30
+    "api/*.js": {
+      "runtime": "nodejs18.x",
+      "maxDuration": 30,
+      "memory": 512
     }
-  }
+  },
+  "builds": [
+    { "src": "api/*.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" }
+  ]
 }
