@@ -1,28 +1,22 @@
-import chromium from "@sparticuz/chromium";
-import puppeteer from "puppeteer-core";
+import puppeteer from "puppeteer";
 
 export default async function handler(req, res) {
   const { user } = req.query;
-
   if (!user) {
     return res.status(400).json({ error: "Missing ?user=username" });
   }
 
   let browser;
   try {
-    const executablePath = await chromium.executablePath();
-
     browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath,
-      headless: chromium.headless,
+      headless: "new",
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
     const page = await browser.newPage();
     await page.goto(`https://www.reddit.com/user/${user}/achievements/category/3/`, {
       waitUntil: "networkidle2",
-      timeout: 30000,
+      timeout: 45000,
     });
 
     const streak = await page.evaluate(() => {
@@ -33,13 +27,13 @@ export default async function handler(req, res) {
     await browser.close();
 
     if (!streak) {
-      return res.status(404).json({ error: "Streak not found" });
+      return res.status(404).json({ error: "Could not find streak element" });
     }
 
-    return res.status(200).json({ user, streak });
-  } catch (err) {
-    console.error("Scrape error:", err);
+    res.status(200).json({ user, streak });
+  } catch (error) {
     if (browser) await browser.close();
-    return res.status(500).json({ error: err.message });
+    console.error(error);
+    res.status(500).json({ error: error.message });
   }
 }
