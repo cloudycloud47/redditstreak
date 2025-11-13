@@ -1,40 +1,41 @@
-import chromium from "@sparticuz/chromium-min";
+// /api/streak.js
 import puppeteer from "puppeteer-core";
+import chromium from "@sparticuz/chromium-min";
 
 export default async function handler(req, res) {
   const { user } = req.query;
-
   if (!user) {
     return res.status(400).json({ error: "Missing ?user=username parameter" });
   }
 
-  const url = `https://www.reddit.com/user/${user}/achievements/category/3/`;
-
-  let browser;
   try {
-    browser = await puppeteer.launch({
+    const executablePath = await chromium.executablePath;
+
+    const browser = await puppeteer.launch({
       args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
+      executablePath,
       headless: chromium.headless,
+      defaultViewport: chromium.defaultViewport,
     });
 
     const page = await browser.newPage();
+    const url = `https://www.reddit.com/user/${user}/achievements/category/3/`;
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
 
     const streak = await page.evaluate(() => {
-      const el = document.querySelector("span.current-streak");
-      if (el && el.textContent) {
-        return parseInt(el.textContent.trim());
-      }
-      const match = document.body.innerText.match(/(\d+)\s*day streak/i);
-      return match ? parseInt(match[1]) : null;
+      const el = document.querySelector(".current-streak");
+      return el ? parseInt(el.textContent.trim()) : null;
     });
 
-    res.status(200).json({ username: user, streak });
+    await browser.close();
+
+    if (!streak) {
+      return res.status(404).json({ error: "Could not find streak on Reddit profile" });
+    }
+
+    return res.status(200).json({ user, streak });
   } catch (err) {
-    res.status(500).json({ error: err.message });
-  } finally {
-    if (browser) await browser.close().catch(() => {});
+    console.error(err);
+    return res.status(500).json({ error: err.message });
   }
 }
