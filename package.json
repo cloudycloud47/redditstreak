@@ -5,7 +5,8 @@
   "type": "module",
   "dependencies": {
     "puppeteer-core": "^24.3.0",
-    "@sparticuz/chromium-min": "^115.0.0"
+    "@sparticuz/chromium-min": "^127.0.0"
   }
 }
+
 
